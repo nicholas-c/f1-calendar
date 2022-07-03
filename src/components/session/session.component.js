@@ -18,7 +18,7 @@ const Session = () => {
       {loading && <Spinner />}
 
       <div
-        className={clsx({
+        className={clsx("transition-opacity", {
           "opacity-0": loading,
         })}
       >
