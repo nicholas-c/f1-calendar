@@ -1,21 +1,38 @@
 import Image from "next/image";
 import clsx from "clsx";
-import { add, intervalToDuration } from "date-fns";
+import Countdown from "react-countdown";
+import { add } from "date-fns";
 
-export default function Home({ races, nextRace, countdown }) {
+const renderer = ({ days, hours, minutes }) => (
+  <div className="flex  justify-center  mb-2  border-b  pb-4">
+    <div className="flex  flex-col  items-center  px-4  border-r  font-medium">
+      <span className="font-black">{days < 10 ? "0" + days : days}</span> Days
+    </div>
+
+    <div className="flex  flex-col  items-center  px-4  border-r  font-medium">
+      <span className="font-black">{hours < 10 ? "0" + hours : hours}</span>{" "}
+      Hours
+    </div>
+
+    <div className="flex  flex-col  items-center  px-4  font-medium">
+      <span className="font-black">
+        {minutes < 10 ? "0" + minutes : minutes}
+      </span>{" "}
+      Mins
+    </div>
+  </div>
+);
+
+export default function Home({ nextRace, lastRace }) {
+  console.log(lastRace.Results[0]);
+  const hasFinished =
+    new Date() >
+    add(new Date(`${nextRace.date} ${nextRace.time}`), { hours: 3 });
+
   const inProgress =
     new Date() > new Date(`${nextRace.date} ${nextRace.time}`) &&
     new Date() <
       add(new Date(`${nextRace.date} ${nextRace.time}`), { hours: 3 });
-
-  if (inProgress) {
-    countdown = {
-      months: 0,
-      days: 0,
-      hours: 0,
-      minutes: 0,
-    };
-  }
 
   return (
     <>
@@ -25,25 +42,32 @@ export default function Home({ races, nextRace, countdown }) {
             className={clsx(
               "inline-block  py-2  px-4  rounded-md  text-sm  text-white  uppercase  font-bold",
               {
-                "bg-orange-400": !inProgress,
-                "bg-green-600": inProgress,
+                "bg-orange-400": !inProgress && !hasFinished,
+                "bg-blue-500": inProgress,
+                "bg-green-600": hasFinished,
               }
             )}
           >
-            {inProgress ? "In progress" : "Next Race"}
+            {inProgress
+              ? "In progress"
+              : hasFinished
+              ? "Finished"
+              : "Next Race"}
           </span>
 
           <div className="flex  mt-4  mb-2  font-bold">
-            <div className="mr-3  rounded-md  overflow-hidden">
-              <Image
-                src={nextRace.Circuit.flag}
-                className="block"
-                width="40"
-                height="20"
-                alt={nextRace.Circuit.Location.country}
-                priority
-              />
-            </div>
+            {nextRace.Circuit.flag && (
+              <div className="mr-3  rounded-md  overflow-hidden">
+                <Image
+                  src={nextRace.Circuit.flag}
+                  className="block"
+                  width="40"
+                  height="20"
+                  alt={nextRace.Circuit.Location.country}
+                  priority
+                />
+              </div>
+            )}
 
             {nextRace.Circuit.Location.country}
           </div>
@@ -53,43 +77,10 @@ export default function Home({ races, nextRace, countdown }) {
           </h2>
 
           <div className="inline-flex  flex-col  p-4  rounded-lg  shadow-md  bg-gray-800  text-white  font-bold  tracking-wider  w-full  md:w-auto">
-            <div className="flex  justify-center  mb-2  border-b  pb-4">
-              {countdown.months > 0 && (
-                <div className="flex  flex-col  items-center  px-4  border-r  font-medium">
-                  <span className="font-black">
-                    {countdown.months < 10
-                      ? "0" + countdown.months
-                      : countdown.months}
-                  </span>{" "}
-                  Months
-                </div>
-              )}
-
-              <div className="flex  flex-col  items-center  px-4  border-r  font-medium">
-                <span className="font-black">
-                  {countdown.days < 10 ? "0" + countdown.days : countdown.days}
-                </span>{" "}
-                Days
-              </div>
-
-              <div className="flex  flex-col  items-center  px-4  border-r  font-medium">
-                <span className="font-black">
-                  {countdown.hours < 10
-                    ? "0" + countdown.hours
-                    : countdown.hours}
-                </span>{" "}
-                Hours
-              </div>
-
-              <div className="flex  flex-col  items-center  px-4  font-medium">
-                <span className="font-black">
-                  {countdown.minutes < 10
-                    ? "0" + countdown.minutes
-                    : countdown.minutes}
-                </span>{" "}
-                Mins
-              </div>
-            </div>
+            <Countdown
+              date={new Date(`${nextRace.date} ${nextRace.time}`)}
+              renderer={renderer}
+            />
 
             {nextRace.events.map((event) => {
               const sessionInProgress =
@@ -154,29 +145,53 @@ export default function Home({ races, nextRace, countdown }) {
 
       <div className="bg-gray-800">
         <div className="container  mx-auto  text-white  p-10">
-          <h2 className="text-4xl  font-lato  font-black  uppercase  tracking-wider  mb-6">
+          <h2 className="text-3xl  font-lato  font-black  uppercase  tracking-wider  mb-6">
             Previous race
           </h2>
+
+          <div>{lastRace.raceName}</div>
+
+          {lastRace.Results.slice(0, 3).map((result) => {
+            console.log(result);
+
+            return (
+              <div key={`previous-race-position-${result.position}`}>
+                {result.position} {result.Driver.givenName}{" "}
+                {result.Driver.familyName}
+                {result.FastestLap.rank === "1" ? "*" : ""}
+              </div>
+            );
+          })}
         </div>
       </div>
     </>
   );
 }
 
-export const getServerSideProps = async (ctx) => {
-  const races = (
-    await (await fetch("https://ergast.com/api/f1/2022.json")).json()
-  ).MRData.RaceTable.Races;
+import racesData from "../data/2022.json";
+import lastRaceData from "../data/lastRace.json";
 
-  const nextRace = races.find(
-    (race) => new Date(`${race.date} 23:59:59`) > new Date()
-  );
+export const getStaticProps = async (ctx) => {
+  var races;
+  var lastRace;
 
-  const lastRace = await (
-    await fetch("http://ergast.com/api/f1/current/last/results.json")
-  ).json();
+  if (process.env.NODE_ENV === "production") {
+    var [races, lastRace] = await Promise.all([
+      (
+        await (await fetch("https://ergast.com/api/f1/2022.json")).json()
+      ).MRData.RaceTable.Races,
+      (
+        await (
+          await fetch("http://ergast.com/api/f1/current/last/results.json")
+        ).json()
+      ).MRData.RaceTable.Races[0],
+    ]);
+  } else {
+    var races = racesData.MRData.RaceTable.Races;
+    var lastRace = lastRaceData.MRData.RaceTable.Races[0];
+  }
 
-  console.log(lastRace.MRData.RaceTable);
+  const nextRace = races[Number(lastRace.round) + 1];
 
   nextRace.Circuit.flag = (
     await (
@@ -216,24 +231,15 @@ export const getServerSideProps = async (ctx) => {
     .filter((event) => event.date)
     .sort(
       (a, b) =>
-        new Date(`${a.date} ${a.timne}`) - new Date(`${b.date} ${b.timne}`)
+        new Date(`${a.date} ${a.time}`) - new Date(`${b.date} ${b.time}`)
     );
 
-  let countdown = intervalToDuration({
-    start: new Date(
-      `${nextRace.events.find((event) => event.name === "Race").date} ${
-        nextRace.time
-      }`
-    ),
-    end: new Date(),
-  });
-
   return {
-    // revalidate: 300,
+    revalidate: 60 * 60, // 1 hour
     props: {
       races,
       nextRace,
-      countdown,
+      lastRace,
     },
   };
 };
