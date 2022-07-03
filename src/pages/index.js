@@ -61,8 +61,7 @@ export const getStaticProps = async () => {
     ).MRData.RaceTable.Races[0],
   ]);
 
-  // const nextRace = races[Number(lastRace.round)];
-  const nextRace = races[0];
+  const nextRace = races[Number(lastRace.round)];
 
   try {
     nextRace.Circuit.flag = (
