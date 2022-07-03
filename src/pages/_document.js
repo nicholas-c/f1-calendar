@@ -6,9 +6,8 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
           <link
-            href="https://fonts.googleapis.com/css2?family=Lato:wght@900&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Lato&display=optional"
             rel="stylesheet"
           />
         </Head>

@@ -5,6 +5,7 @@ const nextConfig = {
     domains: ["flagcdn.com"],
   },
   experimental: {
+    runtime: "experimental-edge",
     images: {
       allowFutureImage: true,
     },
