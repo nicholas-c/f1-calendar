@@ -54,6 +54,7 @@ const NextRace = () => {
             alt={nextRace.raceName}
             width="1000"
             height="1000"
+            priority
           />
         </div>
       </div>
