@@ -3,7 +3,7 @@ import clsx from "clsx";
 import Countdown from "react-countdown";
 import { add } from "date-fns";
 
-const renderer = ({ days, hours, minutes }) => (
+const renderer = ({ days, hours, minutes, seconds }) => (
   <div className="flex  justify-center  mb-2  border-b  pb-4">
     <div className="flex  flex-col  items-center  px-4  border-r  font-medium">
       <span className="font-black">{days < 10 ? "0" + days : days}</span> Days
@@ -14,12 +14,21 @@ const renderer = ({ days, hours, minutes }) => (
       Hours
     </div>
 
-    <div className="flex  flex-col  items-center  px-4  font-medium">
+    <div className="flex  flex-col  items-center  px-4  border-r  last:border-0  font-medium">
       <span className="font-black">
         {minutes < 10 ? "0" + minutes : minutes}
       </span>{" "}
       Mins
     </div>
+
+    {days < 1 && (
+      <div className="flex  flex-col  items-center  px-4  font-medium">
+        <span className="font-black">
+          {seconds < 10 ? "0" + seconds : seconds}
+        </span>{" "}
+        Secs
+      </div>
+    )}
   </div>
 );
 
@@ -152,8 +161,6 @@ export default function Home({ nextRace, lastRace }) {
           <div>{lastRace.raceName}</div>
 
           {lastRace.Results.slice(0, 3).map((result) => {
-            console.log(result);
-
             return (
               <div key={`previous-race-position-${result.position}`}>
                 {result.position} {result.Driver.givenName}{" "}
@@ -168,7 +175,7 @@ export default function Home({ nextRace, lastRace }) {
   );
 }
 
-export const getStaticProps = async (ctx) => {
+export const getStaticProps = async () => {
   const [races, lastRace] = await Promise.all([
     (
       await (await fetch("https://ergast.com/api/f1/2022.json")).json()
@@ -182,17 +189,21 @@ export const getStaticProps = async (ctx) => {
 
   const nextRace = races[Number(lastRace.round)];
 
-  nextRace.Circuit.flag = (
-    await (
-      await fetch(
-        `https://restcountries.com/v3.1/name/${nextRace.Circuit.Location.country.toLowerCase()}`
-      )
-    ).json()
-  ).find(
-    (country) =>
-      country.name.common === nextRace.Circuit.Location.country ||
-      country.altSpellings.includes(nextRace.Circuit.Location.country)
-  ).flags.svg;
+  try {
+    nextRace.Circuit.flag = (
+      await (
+        await fetch(
+          `https://restcountries.com/v3.1/name/${nextRace.Circuit.Location.country.toLowerCase()}`
+        )
+      ).json()
+    ).find(
+      (country) =>
+        country.name.common === nextRace.Circuit.Location.country ||
+        country.altSpellings.includes(nextRace.Circuit.Location.country)
+    ).flags.svg;
+  } catch (e) {
+    console.error(e);
+  }
 
   nextRace.events = [
     {
