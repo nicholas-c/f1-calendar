@@ -38,18 +38,29 @@ const Sessions = () => {
               {event.name}
             </span>
 
-            <span className="text-gray-400">
-              {new Date(`${event.date} ${event.time}`).toLocaleString("en-GB", {
-                weekday: "short",
-              })}
-            </span>
+            <time
+              dateTime={`${event.date}T${event.time}`}
+              className="flex  justify-between"
+            >
+              <span className="text-gray-400">
+                {new Date(`${event.date} ${event.time}`).toLocaleString(
+                  "en-GB",
+                  {
+                    weekday: "short",
+                  }
+                )}
+              </span>
 
-            <span className="shrink-0  inline-block  ml-2  bg-gray-500  rounded  w-16  text-center">
-              {new Date(`${event.date} ${event.time}`).toLocaleString("en-GB", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
+              <span className="shrink-0  inline-block  ml-2  bg-gray-500  rounded  w-16  text-center">
+                {new Date(`${event.date} ${event.time}`).toLocaleString(
+                  "en-GB",
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
+                )}
+              </span>
+            </time>
           </div>
         );
       })}

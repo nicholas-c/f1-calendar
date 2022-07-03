@@ -4,6 +4,11 @@ const nextConfig = {
   images: {
     domains: ["flagcdn.com"],
   },
+  experimental: {
+    images: {
+      allowFutureImage: true,
+    },
+  },
 };
 
 module.exports = nextConfig;

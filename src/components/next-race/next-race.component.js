@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/future/image";
 import clsx from "clsx";
 import { useContext } from "react";
 import { add } from "date-fns";
@@ -27,8 +27,8 @@ const NextRace = () => {
             "inline-block  py-2  px-4  rounded-md  text-sm  text-white  uppercase  font-bold",
             {
               "bg-orange-400": !inProgress && !hasFinished,
-              "bg-blue-500": inProgress,
               "bg-green-600": hasFinished,
+              "bg-blue-500": inProgress,
             }
           )}
         >
@@ -47,13 +47,14 @@ const NextRace = () => {
         <Session />
       </div>
 
-      <div className="w-full  p-5  md:p-10  pb-0  md:pb-10  order-1  md:order-2">
+      <div className="w-full  p-4  md:p-10  md:pb-10  order-1  md:order-2">
         <div className="w-3/4  md:w-auto  mx-auto">
           <Image
-            src={`/circuits/${nextRace.Circuit.Location.country.toLowerCase()}.svg`}
+            src={`/tracks/${Number(nextRace.round) - 1}.svg`}
             alt={nextRace.raceName}
-            width="1000"
+            className="max-h-80"
             height="1000"
+            width="1000"
             priority
           />
         </div>

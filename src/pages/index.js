@@ -1,13 +1,18 @@
+import Head from "next/head";
 import { NextRace } from "../components/next-race/next-race.component";
 import { RaceDataContext } from "../providers/race-data.context";
 
-const Home = ({ nextRace, lastRace }) => (
+const Home = ({ races, nextRace, lastRace }) => (
   <RaceDataContext.Provider
     value={{
       nextRace,
       lastRace,
     }}
   >
+    <Head>
+      <title>Formula One 2022 race calendar</title>
+    </Head>
+
     <NextRace />
 
     <div className="bg-gray-800">
@@ -29,6 +34,16 @@ const Home = ({ nextRace, lastRace }) => (
         })}
       </div>
     </div>
+
+    {/* {races.map((race) => {
+      return (
+        <div key={race.date + race.time}>
+          {race.raceName}
+          {race.date}
+          {race.time}
+        </div>
+      );
+    })} */}
   </RaceDataContext.Provider>
 );
 
@@ -46,7 +61,8 @@ export const getStaticProps = async () => {
     ).MRData.RaceTable.Races[0],
   ]);
 
-  const nextRace = races[Number(lastRace.round)];
+  // const nextRace = races[Number(lastRace.round)];
+  const nextRace = races[0];
 
   try {
     nextRace.Circuit.flag = (
