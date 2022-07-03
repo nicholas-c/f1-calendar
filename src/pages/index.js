@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Head from "next/head";
 import { NextRace } from "../components/next-race/next-race.component";
 import { RaceDataContext } from "../providers/race-data.context";
@@ -23,15 +24,28 @@ const Home = ({ races, nextRace, lastRace }) => (
 
         <div>{lastRace.raceName}</div>
 
-        {lastRace.Results.slice(0, 3).map((result) => {
-          return (
-            <div key={`previous-race-position-${result.position}`}>
-              {result.position} {result.Driver.givenName}{" "}
-              {result.Driver.familyName}
-              {result.FastestLap.rank === "1" ? "*" : ""}
-            </div>
-          );
-        })}
+        {lastRace.Results.map((result) => (
+          <div
+            key={`previous-race-position-${result.position}`}
+            className={clsx("flex", {
+              "text-fuchsia-400": result?.FastestLap?.rank === "1",
+            })}
+          >
+            {result.position}
+            <span
+              className={clsx("pl-4", {
+                "font-bold": result?.FastestLap?.rank === "1",
+              })}
+            >
+              {result.Driver.givenName} {result.Driver.familyName}
+            </span>
+            {result?.FastestLap?.rank === "1" && (
+              <span className="material-symbols-outlined  text-fuchsia-400  pl-2">
+                timer
+              </span>
+            )}
+          </div>
+        ))}
       </div>
     </div>
 

@@ -53,8 +53,8 @@ const NextRace = () => {
             src={`/tracks/${Number(nextRace.round) - 1}.svg`}
             alt={nextRace.raceName}
             className="max-h-80"
-            height="1000"
-            width="1000"
+            height="500"
+            width="500"
             priority
           />
         </div>
