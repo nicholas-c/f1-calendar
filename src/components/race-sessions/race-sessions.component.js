@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import clsx from "clsx";
-import { add } from "date-fns";
+import { add, format } from "date-fns";
 import { RaceDataContext } from "../../providers/race-data.context";
 
 const Sessions = () => {
@@ -43,22 +43,11 @@ const Sessions = () => {
               className="flex  justify-between"
             >
               <span className="text-gray-400">
-                {new Date(`${event.date} ${event.time}`).toLocaleString(
-                  "en-GB",
-                  {
-                    weekday: "short",
-                  }
-                )}
+                {format(new Date(`${event.date} ${event.time}`), "ccc")}
               </span>
 
               <span className="shrink-0  inline-block  ml-2  bg-gray-500  rounded  w-16  text-center">
-                {new Date(`${event.date} ${event.time}`).toLocaleString(
-                  "en-GB",
-                  {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }
-                )}
+                {format(new Date(`${event.date} ${event.time}`), "kk:mm")}
               </span>
             </time>
           </div>
