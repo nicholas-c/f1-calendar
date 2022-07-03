@@ -168,30 +168,19 @@ export default function Home({ nextRace, lastRace }) {
   );
 }
 
-import racesData from "../data/2022.json";
-import lastRaceData from "../data/lastRace.json";
-
 export const getStaticProps = async (ctx) => {
-  var races;
-  var lastRace;
+  const [races, lastRace] = await Promise.all([
+    (
+      await (await fetch("https://ergast.com/api/f1/2022.json")).json()
+    ).MRData.RaceTable.Races,
+    (
+      await (
+        await fetch("http://ergast.com/api/f1/current/last/results.json")
+      ).json()
+    ).MRData.RaceTable.Races[0],
+  ]);
 
-  if (process.env.NODE_ENV === "production") {
-    var [races, lastRace] = await Promise.all([
-      (
-        await (await fetch("https://ergast.com/api/f1/2022.json")).json()
-      ).MRData.RaceTable.Races,
-      (
-        await (
-          await fetch("http://ergast.com/api/f1/current/last/results.json")
-        ).json()
-      ).MRData.RaceTable.Races[0],
-    ]);
-  } else {
-    var races = racesData.MRData.RaceTable.Races;
-    var lastRace = lastRaceData.MRData.RaceTable.Races[0];
-  }
-
-  const nextRace = races[Number(lastRace.round) + 1];
+  const nextRace = races[Number(lastRace.round)];
 
   nextRace.Circuit.flag = (
     await (
