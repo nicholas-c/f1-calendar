@@ -40,7 +40,7 @@ const NextRace = () => {
           flagUrl={nextRace.Circuit.flag}
         />
 
-        <h2 className="text-4xl  font-lato  font-black  uppercase  tracking-wider  mb-6">
+        <h2 className="text-4xl  font-black  uppercase  tracking-wider  mb-6">
           {nextRace.raceName}
         </h2>
 

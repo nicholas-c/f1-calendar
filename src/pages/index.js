@@ -18,7 +18,7 @@ const Home = ({ races, nextRace, lastRace }) => (
 
     <div className="bg-gray-800">
       <div className="container  mx-auto  text-white  p-10">
-        <h2 className="text-3xl  font-lato  font-black  uppercase  tracking-wider  mb-6">
+        <h2 className="text-3xl  font-black  uppercase  tracking-wider  mb-6">
           Previous race
         </h2>
 
