@@ -11,7 +11,7 @@ const Home = ({ races, nextRace, lastRace }) => (
     }}
   >
     <Head>
-      <title>Formula One 2022 race calendar</title>
+      <title>Formula One 2023 race calendar</title>
     </Head>
 
     <NextRace />
