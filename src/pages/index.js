@@ -7,7 +7,7 @@ const Home = ({ races, nextRace, lastRace }) => (
   <RaceDataContext.Provider
     value={{
       nextRace,
-      lastRace,
+   //   lastRace,
     }}
   >
     <Head>
@@ -15,7 +15,7 @@ const Home = ({ races, nextRace, lastRace }) => (
     </Head>
 
     <NextRace />
-
+{/*
     <div className="bg-gray-800">
       <div className="container  mx-auto  text-white  p-10">
         <h2 className="text-3xl  font-black  uppercase  tracking-wider  mb-6">
@@ -47,7 +47,7 @@ const Home = ({ races, nextRace, lastRace }) => (
           </div>
         ))}
       </div>
-    </div>
+    </div>*/}
 
     {/* {races.map((race) => {
       return (
@@ -68,14 +68,14 @@ export const getStaticProps = async () => {
     (
       await (await fetch("https://ergast.com/api/f1/2023.json")).json()
     ).MRData.RaceTable.Races,
-    (
-      await (
-        await fetch("http://ergast.com/api/f1/current/last/results.json")
-      ).json()
-    ).MRData.RaceTable.Races[0],
+  //  (
+  //    await (
+  //      await fetch("http://ergast.com/api/f1/current/last/results.json")
+  //    ).json()
+  //  ).MRData.RaceTable.Races[0],
   ]);
 
-  const nextRace = races[Number(lastRace.round)];
+  const nextRace = races[0];
 
   try {
     nextRace.Circuit.flag = (
