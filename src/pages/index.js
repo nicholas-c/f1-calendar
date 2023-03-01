@@ -64,7 +64,7 @@ const Home = ({ races, nextRace, lastRace }) => (
 export default Home;
 
 export const getStaticProps = async () => {
-  var [races, lastRace] = await Promise.all([
+  var [races] = await Promise.all([
     (
       await (await fetch("https://ergast.com/api/f1/2023.json")).json()
     ).MRData.RaceTable.Races,
@@ -127,7 +127,7 @@ export const getStaticProps = async () => {
     props: {
       races,
       nextRace,
-      lastRace,
+   //   lastRace,
     },
   };
 };
