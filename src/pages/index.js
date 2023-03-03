@@ -63,7 +63,7 @@ const Home = ({ races, nextRace, lastRace }) => (
 
 export default Home;
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   var [races] = await Promise.all([
     (
       await (await fetch("https://ergast.com/api/f1/2023.json")).json()
@@ -123,7 +123,7 @@ export const getStaticProps = async () => {
     );
 
   return {
-    revalidate: 60 * 60, // 1 hour
+//     revalidate: 60 * 60, // 1 hour
     props: {
       races,
       nextRace,
