@@ -17,7 +17,7 @@ const Sessions = () => {
           new Date() > new Date(`${event.date} ${event.time}`) &&
           new Date() <
             add(new Date(`${event.date} ${event.time}`), {
-              hours: 1,
+              hours: 3,
             });
 
         return (
